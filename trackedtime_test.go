@@ -55,3 +55,14 @@ func TestComment(t *testing.T) {
 		t.Fatalf("Comment failed, got \"%v\"", i.Comment)
 	}
 }
+
+func TestChecked(t *testing.T) {
+	i := interval{}
+	if i.Checked != false {
+		t.Fatalf("checked is not false")
+	}
+	i.Checked = true
+	if i.Checked != true {
+		t.Fatalf("checked is not true")
+	}
+}

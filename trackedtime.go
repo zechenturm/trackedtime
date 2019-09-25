@@ -6,6 +6,7 @@ type interval struct {
 	StartTime time.Time
 	StopTime  time.Time
 	Comment   string
+	Checked   bool
 }
 
 func (i interval) Duration() time.Duration {
