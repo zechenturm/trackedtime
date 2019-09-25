@@ -47,3 +47,11 @@ func TestIntervalNonZero(t *testing.T) {
 		log.Fatalf("Wrong Duration: want %v, got %v", stop.Sub(start), i.Duration())
 	}
 }
+
+func TestComment(t *testing.T) {
+	i := interval{}
+	i.Comment = "test"
+	if i.Comment != "test" {
+		t.Fatalf("Comment failed, got \"%v\"", i.Comment)
+	}
+}
