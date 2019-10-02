@@ -93,3 +93,40 @@ func TestCalendarWeek(t *testing.T) {
 		}
 	}
 }
+
+func TestAccHours(t *testing.T) {
+	type timeDur struct {
+		Start    string
+		Duration time.Duration
+	}
+
+	times := []timeDur{
+		{"16:10 30 Sep 2019", 4 * time.Hour},
+		{"8:20 23 Nov 2018", 8 * time.Hour},
+		{"11:40 2 Oct 2018", 7*time.Hour + 30*time.Minute},
+		{"12:00 2 Oct 2019", 6 * time.Hour},
+		{"16:30 1 Oct 2019", 3 * time.Hour},
+	}
+
+	refHours := 0.0
+	intervals := make([]interval, len(times))
+	for _, tm := range times {
+		tt, err := time.Parse("15:04 2 Jan 2006", tm.Start)
+		if err != nil {
+			t.Fatalf("failed to parse time: %v", err)
+		}
+		intervals = append(intervals, interval{
+			StartTime: tt,
+			StopTime:  tt.Add(tm.Duration),
+		})
+		refHours += tm.Duration.Hours()
+	}
+
+	hours := AccumulateHours(&intervals)
+	floatEqual := func(a float64, b float64, tolerance float64) bool {
+		return (a > b-tolerance) && (a < b+tolerance)
+	}
+	if !(floatEqual(hours, refHours, 0.0001)) {
+		t.Fatalf("wrong time accumulated: got %v, wanted %v", hours, refHours)
+	}
+}

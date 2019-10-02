@@ -22,3 +22,11 @@ func (i interval) CalWeek() CalWeek {
 	y, w := i.StartTime.ISOWeek()
 	return CalWeek{w, y}
 }
+
+func AccumulateHours(intervals *[]interval) float64 {
+	hours := 0.0
+	for _, i := range *intervals {
+		hours += i.Duration().Hours()
+	}
+	return hours
+}
