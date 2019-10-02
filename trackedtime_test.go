@@ -6,13 +6,21 @@ import (
 	"time"
 )
 
+func parseTime(t *testing.T, tm string) time.Time {
+	cwt, err := time.Parse("15:04 2 Jan 2006", tm)
+	if err != nil {
+		t.Fatalf("failed to parse time: %v", err)
+	}
+	return cwt
+}
+
 func TestCreate(t *testing.T) {
 	_ = interval{}
 }
 
 func TestSetStartTime(t *testing.T) {
 	i := interval{}
-	tm, _ := time.Parse("15:04 2 Jan 2006", "16:10 11 Nov 2018")
+	tm := parseTime(t, "16:10 11 Nov 2018")
 	i.StartTime = tm
 	if i.StartTime != tm {
 		t.Fatalf("start time assignment failed: wanted %v, got %v", tm, i.StartTime)
@@ -21,7 +29,7 @@ func TestSetStartTime(t *testing.T) {
 
 func TestStopTime(t *testing.T) {
 	i := interval{}
-	tm, _ := time.Parse("15:04 2 Jan 2006", "16:10 11 Nov 2018")
+	tm := parseTime(t, "16:10 11 Nov 2018")
 	i.StopTime = tm
 	if i.StopTime != tm {
 		t.Fatalf("start time assignment failed: wanted %v, got %v", tm, i.StopTime)
@@ -29,7 +37,7 @@ func TestStopTime(t *testing.T) {
 }
 func TestIntervalZero(t *testing.T) {
 	i := interval{}
-	tm, _ := time.Parse("15:04 2 Jan 2006", "16:10 11 Nov 2018")
+	tm := parseTime(t, "16:10 11 Nov 2018")
 	i.StartTime = tm
 	i.StopTime = tm
 	if i.Duration() != time.Duration(0) {
@@ -39,7 +47,7 @@ func TestIntervalZero(t *testing.T) {
 
 func TestIntervalNonZero(t *testing.T) {
 	i := interval{}
-	start, _ := time.Parse("15:04 2 Jan 2006", "16:10 11 Nov 2018")
+	start := parseTime(t, "16:10 11 Nov 2018")
 	stop := start.Add(time.Hour)
 	i.StartTime = start
 	i.StopTime = stop
@@ -82,10 +90,7 @@ func TestCalendarWeek(t *testing.T) {
 		{"16:30 1 Oct 2019", 40, 2019},
 	}
 	for _, tm := range times {
-		cwt, err := time.Parse("15:04 2 Jan 2006", tm.Time)
-		if err != nil {
-			t.Fatalf("failed to parse time: %v", err)
-		}
+		cwt := parseTime(t, tm.Time)
 		i.StartTime = cwt
 		cw := i.CalWeek()
 		if cw.Week != tm.Week || cw.Year != tm.Year {
@@ -111,10 +116,7 @@ func TestAccHours(t *testing.T) {
 	refHours := 0.0
 	intervals := make([]interval, len(times))
 	for _, tm := range times {
-		tt, err := time.Parse("15:04 2 Jan 2006", tm.Start)
-		if err != nil {
-			t.Fatalf("failed to parse time: %v", err)
-		}
+		tt := parseTime(t, tm.Start)
 		intervals = append(intervals, interval{
 			StartTime: tt,
 			StopTime:  tt.Add(tm.Duration),
