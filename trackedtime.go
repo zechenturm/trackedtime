@@ -19,5 +19,6 @@ func (i interval) Duration() time.Duration {
 }
 
 func (i interval) CalWeek() CalWeek {
-	return CalWeek{40, 2019}
+	y, w := i.StartTime.ISOWeek()
+	return CalWeek{w, y}
 }

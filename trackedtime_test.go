@@ -76,6 +76,10 @@ func TestCalendarWeek(t *testing.T) {
 	}
 	times := []cwtime{
 		{"16:10 30 Sep 2019", 40, 2019},
+		{"8:20 23 Nov 2018", 47, 2018},
+		{"11:40 2 Oct 2018", 40, 2018},
+		{"12:00 2 Oct 2019", 40, 2019},
+		{"16:30 1 Oct 2019", 40, 2019},
 	}
 	for _, tm := range times {
 		cwt, err := time.Parse("15:04 2 Jan 2006", tm.Time)
