@@ -66,3 +66,13 @@ func TestChecked(t *testing.T) {
 		t.Fatalf("checked is not true")
 	}
 }
+
+func TestCalendarWeek(t *testing.T) {
+	i := interval{}
+	start, _ := time.Parse("15:04 2 Jan 2006", "16:10 30 Sep 2019")
+	i.StartTime = start
+	cw := i.CalWeek()
+	if cw.Week != 40 || cw.Year != 2019 {
+		t.Fatalf("wrong calendar week, got (%v, %v), wanted (40, 2019)", cw.Week, cw.Year)
+	}
+}
