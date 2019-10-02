@@ -30,3 +30,15 @@ func AccumulateHours(intervals *[]interval) float64 {
 	}
 	return hours
 }
+
+type FilterFunc func(*interval) bool
+
+func Filter(intervals *[]interval, filter FilterFunc) *[]interval {
+	var out []interval
+	for _, i := range *intervals {
+		if filter(&i) {
+			out = append(out, i)
+		}
+	}
+	return &out
+}

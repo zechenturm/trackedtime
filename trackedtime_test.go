@@ -132,3 +132,48 @@ func TestAccHours(t *testing.T) {
 		t.Fatalf("wrong time accumulated: got %v, wanted %v", hours, refHours)
 	}
 }
+
+func TestFilterTrue(t *testing.T) {
+	i := interval{}
+	j := Filter(&([]interval{i}), func(i *interval) bool {
+		return true
+	})
+	if i != (*j)[0] {
+		t.Fatalf("wrong filter behaviour true: filter did not return the same element")
+	}
+}
+
+func TestFilterFalse(t *testing.T) {
+	i := interval{}
+	j := Filter(&([]interval{i}), func(i *interval) bool {
+		return false
+	})
+	if len(*j) != 0 {
+		t.Fatalf("wrong filter behaviour false: filter returned more than 0 elemtents")
+	}
+}
+
+func TestFilterMultiple(t *testing.T) {
+	times := []string{
+		"16:10 30 Sep 2019",
+		"8:20 23 Nov 2018",
+		"11:40 2 Oct 2018",
+		"12:00 2 Oct 2019",
+		"16:30 1 Oct 2019",
+	}
+
+	intervals := make([]interval, len(times))
+	for _, tm := range times {
+		tt := parseTime(t, tm)
+		intervals = append(intervals, interval{
+			StartTime: tt,
+		})
+	}
+
+	filtered := Filter(&intervals, func(i *interval) bool {
+		return i.StartTime.Year() == 2019
+	})
+	if len(*filtered) != 3 {
+		t.Fatalf("wrong filter behaviour: filter returned wrong number of elements: %v", len(*filtered))
+	}
+}
