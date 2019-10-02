@@ -69,10 +69,23 @@ func TestChecked(t *testing.T) {
 
 func TestCalendarWeek(t *testing.T) {
 	i := interval{}
-	start, _ := time.Parse("15:04 2 Jan 2006", "16:10 30 Sep 2019")
-	i.StartTime = start
-	cw := i.CalWeek()
-	if cw.Week != 40 || cw.Year != 2019 {
-		t.Fatalf("wrong calendar week, got (%v, %v), wanted (40, 2019)", cw.Week, cw.Year)
+	type cwtime struct {
+		Time string
+		Week int
+		Year int
+	}
+	times := []cwtime{
+		{"16:10 30 Sep 2019", 40, 2019},
+	}
+	for _, tm := range times {
+		cwt, err := time.Parse("15:04 2 Jan 2006", tm.Time)
+		if err != nil {
+			t.Fatalf("failed to parse time: %v", err)
+		}
+		i.StartTime = cwt
+		cw := i.CalWeek()
+		if cw.Week != tm.Week || cw.Year != tm.Year {
+			t.Fatalf("wrong calendar week, got (%v, %v), wanted (%v, %v)", tm.Week, tm.Year, cw.Week, cw.Year)
+		}
 	}
 }
